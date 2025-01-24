@@ -25,15 +25,24 @@ const operations = {
   divide: divide
 }
 
+// const numbers = {
+//   firstNumber: inputFirstNumber,
+//   secondNumber: inputSecondNumber,
+// }
+
 const operate = function(firstNumber, operationName, secondNumber) {
-  firstNumber = Number(firstNumber);
-  secondNumber = Number(secondNumber);
   const operation = operations[operationName];
   result = operation(firstNumber, secondNumber);
+  result.toString().substring(0, 13);
+  // numbers[firstNumber] = result
   return(result)
 };
 
+
+// console.log(operate(1, 'divide', 99));
+
 const display = document.querySelector(".display")
+
 const clearButton = document.querySelector(".clear") 
 const backButton = document.querySelector(".back") 
 const divideButton = document.querySelector(".divide")
@@ -65,9 +74,6 @@ let dotIsPresent = false;
 let operationEnabled = false;
 let displayOverflow = false;
 
-let operationName;
-let firstNumber;
-let secondNumber;
     
 const numbersButtons = {
   one: oneButton,
@@ -87,14 +93,18 @@ let displayContent = "";
 const sendToDisplay = function (input) {
   displayContent = displayContent + input;
   display.textContent = displayContent;
+  // display.textContent.toString.substring(0, 13)
 }
 
+
 // send numbers to display when according buttons are clicked
+const enableNumberButtons = function(){
 for (let numberButton in numbersButtons) {
   numbersButtons[numberButton].addEventListener("click", function(event) {
   numberInput = numbersButtons[numberButton].textContent
   sendToDisplay(numberInput);
   });
+}
 }
 
 
@@ -104,22 +114,46 @@ const operationButtons = {
   multiply: multiplyButton,
   subtract: subtractButton
 }
-
+const enableOperationButtons = function(){
   for (let operationButton in operationButtons) {
     operationButtons[operationButton].addEventListener("click", function(event) {
       operationInput = operationButtons[operationButton].operation
-      // when operation clicked update first number
-      firstNumber = displayContent;
-      // sendToDisplay(operationInput);
-
-      // update operation
-      operationName =  operationButton
-
-      // set displayContent to empty to capture second number later
-      displayContent = "";
+    sendToDisplay(operationInput);
     });
   }
-  
+  }
+
+// const disableNumberButtons = function(){
+//   for (let numberButton in numbersButtons) {
+//     numbersButtons[numberButton].removeEventListener("click", function(event) {
+//     numberInput = numbersButtons[numberButton].textContent
+//     sendToDisplay(numberInput);
+//     });
+//   }
+// }
+
+// const checkDisplayOverflow = function (){
+//   if (displayContent.length >= 12){
+//     return true;
+//   }
+//   {return false}
+// }
+
+// const operateDisplayWithButtons = function (){
+// displayOverflow = checkDisplayOverflow();
+// if (!displayOverflow){
+// enableNumberButtons();
+// enableOperationButtons();
+// console.log("enabled")
+// }
+// else {disableNumberButtons()
+//   console.log("disabled")
+// }
+// }
+
+// operateDisplayWithButtons()
+
+
 dotButton.addEventListener("click", function(){
   dotIsPresent = (displayContent.split("").includes(dotButton.textContent)) ? true : false
   if(!dotIsPresent){
@@ -129,16 +163,45 @@ dotButton.addEventListener("click", function(){
   {return}
 }) 
 
+
+
 clearButton.addEventListener("click", () => { 
   displayContent = "";
   display.textContent = "";
 })
 
+
 evaluateButton.addEventListener("click", () => { 
-  // when "=" is clicked update second number
-  secondNumber = displayContent;
   displayContent = operate(firstNumber, operationName, secondNumber);
-//  update first number after evaluation
-  firstNumber = displayContent; 
   display.textContent = displayContent;
 })
+
+let firstNumber;
+const calculate = function () {
+  // enableNumberButtons();
+  // if at least one number present
+  enableNumberButtons();
+  firstNumber = displayContent;
+  enableOperationButtons();
+  operationName = 
+  // when operation button clicked 
+  // let firstNumber = getFirstNumber();
+  // 
+  // let operationName = getOperationName();
+  // when '=' clicked 
+  // let secondNumber = getSecondNumber();
+  // displayContent = operate(firstNumber, operationName, secondNumber);
+  // display.textContent = displayContent;
+}
+
+calculate()
+
+
+// backButton.addEventListener("click", () => { 
+//   displayContent.
+//   display.textContent = "";
+// })
+
+// set all buttons add event listener
+// set variables to collect first number, operation, and second number
+// when user clicks
