@@ -62,6 +62,18 @@ const minusButton = document.querySelector(".minus");
 const zeroButton = document.querySelector(".zero");
 const dotButton = document.querySelector(".dot");
 const equalsButton = document.querySelector(".equals");
+
+// add operation symbols as property for display 
+addButton.operation = "+"
+divideButton.operation = "/"
+multiplyButton.operation = "*"
+subtractButton.operation = "-"
+
+// set initial conditions
+let dotIsPresent = false;
+let operationIsPresent = false;
+let displayOverflow = false;
+
     
 const numbersButtons = {
   one: oneButton,
@@ -83,9 +95,7 @@ const sendToDisplay = function (input) {
   // display.textContent.toString.substring(0, 13)
 }
 
-let dotIsPresent = false;
-let operationIsPresent = false;
-let displayOverflow = false;
+
 // send numbers to display when according buttons are clicked
 const enableNumberButtons = function(){
 for (let numberButton in numbersButtons) {
@@ -96,6 +106,21 @@ for (let numberButton in numbersButtons) {
 }
 }
 
+
+const operationsButtons = {
+  add: addButton,
+  divide: divideButton,
+  multiply: multiplyButton,
+  subtract: subtractButton
+}
+const enableOperationsButtons = function(){
+  for (let operationButton in operationsButtons) {
+    operationsButtons[operationButton].addEventListener("click", function(event) {
+      operationInput = operationsButtons[operationButton].operation
+    sendToDisplay(operationInput);
+    });
+  }
+  }
 
 // const disableNumberButtons = function(){
 //   for (let numberButton in numbersButtons) {
@@ -117,6 +142,7 @@ const operateDisplayWithButtons = function (){
 // displayOverflow = checkDisplayOverflow();
 if (!displayOverflow){
 enableNumberButtons();
+enableOperationsButtons();
 console.log("enabled")
 }
 // else {disableNumberButtons()
