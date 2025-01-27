@@ -68,10 +68,11 @@ let displayOverflow = false;
 let firstNumIsPresent = false;
 let firstNumIsRecorded = false;
 let evaluated = false;
+let allVariablesGiven = false;
 
 let operationName;
-let firstNumber;
-let secondNumber;
+let firstNumber = "";
+let secondNumber = "";
 let displayContent = "";
     
 const numbersButtons = {
@@ -168,14 +169,20 @@ evaluateButton.addEventListener("click", () => {
   secondNumber = displayContent;
   // when "=" is clicked update second number
   console.log(`1num: ${firstNumber}, 2num: ${secondNumber},  operation: ${operationName}`)
-  displayContent = operate(firstNumber, operationName, secondNumber);
-//  update first number after evaluation
-  firstNumber = displayContent; 
-  display.textContent = displayContent;
-  //  firstNumIsPresent set to true so it is a starting point for operations
-  firstNumIsPresent = true;
-  firstNumIsRecorded = false;
-  evaluated = true;
+  allVariablesGiven = (secondNumber!=='' && firstNumber!=='' && operationName !== "") ? true : false
+  if (allVariablesGiven){
+    displayContent = operate(firstNumber, operationName, secondNumber);
+  //  update first number after evaluation
+    firstNumber = displayContent; 
+    display.textContent = displayContent;
+    // set conditions after clicking "="
+    //  firstNumIsPresent set to true so it is a starting point for operations
+    firstNumIsPresent = true;
+    firstNumIsRecorded = false;
+    evaluated = true;
+    allVariablesGiven = false;
+  }
+  {return}
 })
 
 percentButton.addEventListener("click", () => { 
@@ -193,5 +200,7 @@ minusButton.addEventListener("click", () => {
 })
 
 // stop evaluation before we have operation and both numbers
-// let user change operation and save the last one
 // cut long symbols to avoid display overflow
+
+// equals can give result only when 3 variables given
+// after equals clicked for the first time, 
