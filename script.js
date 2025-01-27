@@ -54,6 +54,7 @@ const zeroButton = document.querySelector(".zero");
 const dotButton = document.querySelector(".dot");
 const evaluateButton = document.querySelector(".evaluate");
 const percentButton = document.querySelector(".percent");
+
 // add operation symbols as property for display 
 addButton.operation = "+"
 divideButton.operation = "/"
@@ -172,4 +173,13 @@ percentButton.addEventListener("click", () => {
   sendToDisplay(input/100);
 })
 
-// forbid to type second number after evaluation
+minusButton.addEventListener("click", () => { 
+  input =  displayContent;
+  displayContent = "";
+  display.textContent = "";
+  sendToDisplay(Number(0 - input));
+})
+
+// stop evaluation before we have operation and both numbers
+// let user change operation and save the last one
+// cut long symbols to avoid display overflow
