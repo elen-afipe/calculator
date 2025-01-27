@@ -64,6 +64,8 @@ subtractButton.operation = "-"
 let dotIsPresent = false;
 let operationEnabled = false;
 let displayOverflow = false;
+let firstNumIsPresent = false;
+let evaluated = false;
 
 let operationName;
 let firstNumber;
@@ -91,13 +93,27 @@ const sendToDisplay = function (input) {
 
 // send numbers to display when according buttons are clicked
 for (let numberButton in numbersButtons) {
-  numbersButtons[numberButton].addEventListener("click", function(event) {
+numbersButtons[numberButton].addEventListener("click", function(event) {
+    if(!firstNumIsPresent){
   numberInput = numbersButtons[numberButton].textContent
   sendToDisplay(numberInput);
-  });
-}
+  operationEnabled = true;
+    } else {
+        if (evaluated) {
+    displayContent = "";
+    display.textContent = "";
+    numberInput = numbersButtons[numberButton].textContent
+    sendToDisplay(numberInput);
+    // set firstNumIsPresent to false to let user continue typing it.
+    firstNumIsPresent = false;
+    // set evaluated to false to return to this part after evaluation
+    evaluated = false;
+      } {return}
+    }
+  })
+  }
 
-
+console.log(operationEnabled)
 const operationButtons = {
   add: addButton,
   divide: divideButton,
@@ -107,16 +123,19 @@ const operationButtons = {
 
   for (let operationButton in operationButtons) {
     operationButtons[operationButton].addEventListener("click", function(event) {
+      if (operationEnabled){
       operationInput = operationButtons[operationButton].operation
       // when operation clicked update first number
       firstNumber = displayContent;
       // sendToDisplay(operationInput);
 
       // update operation
-      operationName =  operationButton
+      operationName =  operationButton;
 
       // set displayContent to empty to capture second number later
       displayContent = "";
+      }
+      {return}
     });
   }
   
@@ -132,6 +151,7 @@ dotButton.addEventListener("click", function(){
 clearButton.addEventListener("click", () => { 
   displayContent = "";
   display.textContent = "";
+  firstNumIsPresent = false;
 })
 
 evaluateButton.addEventListener("click", () => { 
@@ -141,6 +161,8 @@ evaluateButton.addEventListener("click", () => {
 //  update first number after evaluation
   firstNumber = displayContent; 
   display.textContent = displayContent;
+  firstNumIsPresent = true;
+  evaluated = true;
 })
 
 percentButton.addEventListener("click", () => { 
@@ -149,3 +171,5 @@ percentButton.addEventListener("click", () => {
   display.textContent = "";
   sendToDisplay(input/100);
 })
+
+// forbid to type second number after evaluation
