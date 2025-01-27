@@ -66,6 +66,7 @@ let dotIsPresent = false;
 let operationEnabled = false;
 let displayOverflow = false;
 let firstNumIsPresent = false;
+let firstNumIsRecorded = false;
 let evaluated = false;
 
 let operationName;
@@ -124,7 +125,7 @@ const operationButtons = {
 
   for (let operationButton in operationButtons) {
     operationButtons[operationButton].addEventListener("click", function(event) {
-      if (operationEnabled){
+      if (operationEnabled && !firstNumIsRecorded){
       operationInput = operationButtons[operationButton].operation
       // when operation clicked update first number
       firstNumber = displayContent;
@@ -132,11 +133,19 @@ const operationButtons = {
 
       // update operation
       operationName =  operationButton;
-
+      console.log(operationName)
       // set displayContent to empty to capture second number later
       displayContent = "";
+      firstNumIsRecorded = true
       }
-      {return}
+      else if (operationEnabled && firstNumIsRecorded){
+        operationInput = operationButtons[operationButton].operation
+        // update operation
+        operationName =  operationButton;
+        console.log(operationName)
+        // set displayContent to empty to capture second number later
+        displayContent = "";
+      }{return}
     });
   }
   
@@ -156,13 +165,16 @@ clearButton.addEventListener("click", () => {
 })
 
 evaluateButton.addEventListener("click", () => { 
-  // when "=" is clicked update second number
   secondNumber = displayContent;
+  // when "=" is clicked update second number
+  console.log(`1num: ${firstNumber}, 2num: ${secondNumber},  operation: ${operationName}`)
   displayContent = operate(firstNumber, operationName, secondNumber);
 //  update first number after evaluation
   firstNumber = displayContent; 
   display.textContent = displayContent;
+  //  firstNumIsPresent set to true so it is a starting point for operations
   firstNumIsPresent = true;
+  firstNumIsRecorded = false;
   evaluated = true;
 })
 
