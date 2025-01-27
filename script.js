@@ -112,12 +112,27 @@ const sendToDisplay = function (input) {
 // send numbers to display when according buttons are clicked
 for (let numberButton in numbersButtons) {
 numbersButtons[numberButton].addEventListener("click", function(event) {
-    if(!firstNumIsPresent){
+  if (display.textContent === '0' || displayContent === 'ERROR'){
+    numberInput = numbersButtons[numberButton].textContent;
+    displayContent = "";
+    console.log(numberInput)
+    display.textContent = "";
+      sendToDisplay(numberInput);
+    }
+   else if(!firstNumIsPresent){
   numberInput = numbersButtons[numberButton].textContent
   sendToDisplay(numberInput);
   operationEnabled = true;
-    } else {
+    } 
+    else {
         if (evaluated) {
+          if (display.textContent === '0' || displayContent === 'ERROR'){
+            numberInput = numbersButtons[numberButton].textContent
+            displayContent = "";
+            display.textContent = "";
+              sendToDisplay(numberInput);
+            }
+            else{
     displayContent = "";
     display.textContent = "";
     numberInput = numbersButtons[numberButton].textContent
@@ -126,7 +141,9 @@ numbersButtons[numberButton].addEventListener("click", function(event) {
     firstNumIsPresent = false;
     // set evaluated to false to return to this part after evaluation
     evaluated = false;
-      } {return}
+            }
+      } 
+    {return}
     }
   })
   }
@@ -145,8 +162,7 @@ const operationButtons = {
       operationInput = operationButtons[operationButton].operation
       // when operation clicked update first number
       firstNumber = displayContent;
-      // sendToDisplay(operationInput);
-
+      
       // update operation
       operationName =  operationButton;
       console.log(operationName)
@@ -184,18 +200,21 @@ evaluateButton.addEventListener("click", () => {
   secondNumber = displayContent;
   // when "=" is clicked update second number
   console.log(`1num: ${firstNumber}, 2num: ${secondNumber},  operation: ${operationName}`)
-  allVariablesGiven = (secondNumber!=='' && firstNumber!=='' && operationName !== "") ? true : false
+  allVariablesGiven = (secondNumber!=='' && firstNumber!=='' && operationName !== "" && firstNumber !== 'ERROR' && secondNumber !== 'ERROR') ? true : false
   if (allVariablesGiven){
     displayContent = operate(firstNumber, operationName, secondNumber);
   //  update first number after evaluation
-    firstNumber = displayContent; 
+
+    firstNumber = (displayContent !=="ERROR") ? displayContent : ""; 
     display.textContent = displayContent;
     // set conditions after clicking "="
     //  firstNumIsPresent set to true so it is a starting point for operations
+    
     firstNumIsPresent = true;
     firstNumIsRecorded = false;
     evaluated = true;
     allVariablesGiven = false;
+
   }
   {return}
 })
@@ -222,6 +241,5 @@ backButton.addEventListener("click", () => {
   sendToDisplay(input.toString().substring(0, input.length - 1))
   {return}
 }) 
-// make del working
-// dont let user start number with 0
+
 
