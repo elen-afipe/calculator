@@ -30,6 +30,15 @@ const operate = function(firstNumber, operationName, secondNumber) {
   secondNumber = Number(secondNumber);
   const operation = operations[operationName];
   result = operation(firstNumber, secondNumber);
+  if(result.toString().length >= 12) {
+    const [intPart, fracPart] = result.toString().split('.');
+  if (intPart.length >= 12) {
+    return result.toPrecision(7);
+  }
+  const n = 12 - intPart.length; 
+  const factor = Math.pow(10, n);
+  return Math.round(result * factor) / factor;
+  }
   return(result)
 };
 
@@ -90,8 +99,14 @@ const numbersButtons = {
 
 
 const sendToDisplay = function (input) {
-  displayContent = displayContent + input;
-  display.textContent = displayContent;
+  const string = displayContent + input
+  if((string.length<13)){
+    displayContent = displayContent + input;
+    display.textContent = displayContent;
+  }{
+    return
+  }
+  
 }
 
 // send numbers to display when according buttons are clicked
@@ -199,8 +214,14 @@ minusButton.addEventListener("click", () => {
   sendToDisplay(Number(0 - input));
 })
 
-// stop evaluation before we have operation and both numbers
-// cut long symbols to avoid display overflow
+backButton.addEventListener("click", () => { 
+  if(displayContent.length>1)
+  input = displayContent;
+  displayContent = "";
+  display.textContent = "";
+  sendToDisplay(input.toString().substring(0, input.length - 1))
+  {return}
+}) 
+// make del working
+// dont let user start number with 0
 
-// equals can give result only when 3 variables given
-// after equals clicked for the first time, 
