@@ -53,7 +53,7 @@ const minusButton = document.querySelector(".minus");
 const zeroButton = document.querySelector(".zero");
 const dotButton = document.querySelector(".dot");
 const evaluateButton = document.querySelector(".evaluate");
-
+const percentButton = document.querySelector(".percent");
 // add operation symbols as property for display 
 addButton.operation = "+"
 divideButton.operation = "/"
@@ -68,8 +68,10 @@ let displayOverflow = false;
 let operationName;
 let firstNumber;
 let secondNumber;
+let displayContent = "";
     
 const numbersButtons = {
+  zero: zeroButton,
   one: oneButton,
   two: twoButton,
   three: threeButton,
@@ -80,8 +82,6 @@ const numbersButtons = {
   eight: eightButton,
   nine: nineButton
 }
-
-let displayContent = "";
 
 
 const sendToDisplay = function (input) {
@@ -141,4 +141,11 @@ evaluateButton.addEventListener("click", () => {
 //  update first number after evaluation
   firstNumber = displayContent; 
   display.textContent = displayContent;
+})
+
+percentButton.addEventListener("click", () => { 
+  input =  displayContent
+  displayContent = "";
+  display.textContent = "";
+  sendToDisplay(input/100);
 })
