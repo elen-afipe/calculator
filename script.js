@@ -26,20 +26,23 @@ const operations = {
 }
 
 const operate = function(firstNumber, operationName, secondNumber) {
-  firstNumber = Number(firstNumber);
-  secondNumber = Number(secondNumber);
-  const operation = operations[operationName];
-  result = operation(firstNumber, secondNumber);
-  if(result.toString().length >= 12) {
-    const [intPart, fracPart] = result.toString().split('.');
-  if (intPart.length >= 12) {
-    return result.toPrecision(7);
-  }
-  const n = 12 - intPart.length; 
-  const factor = Math.pow(10, n);
-  return Math.round(result * factor) / factor;
-  }
-  return(result)
+    firstNumber = Number(firstNumber);
+    secondNumber = Number(secondNumber);
+    const operation = operations[operationName];
+    result = operation(firstNumber, secondNumber);
+    if(result.toString().length >= 12) {
+      const [intPart, fracPart] = result.toString().split('.');
+      if (intPart.length >= 12) {
+        return result.toPrecision(7);
+      } else {
+        const n = 12 - intPart.length; 
+        const factor = Math.pow(10, n)
+        console.log(Math.round(result * factor) / factor)
+        return Math.round(result * factor) / factor;
+      }
+    } else { 
+      return(result)
+    }
 };
 
 const display = document.querySelector(".display")
@@ -112,7 +115,7 @@ const sendToDisplay = function (input) {
 // send numbers to display when according buttons are clicked
 for (let numberButton in numbersButtons) {
 numbersButtons[numberButton].addEventListener("click", function(event) {
-  if (display.textContent === '0' || displayContent === 'ERROR'){
+  if (!evaluated && (display.textContent === '0' || displayContent === 'ERROR')){
     numberInput = numbersButtons[numberButton].textContent;
     displayContent = "";
     console.log(numberInput)
@@ -183,11 +186,14 @@ const operationButtons = {
   
 dotButton.addEventListener("click", function(){
   dotIsPresent = (displayContent.split("").includes(dotButton.textContent)) ? true : false
+  NumIsPresent = (/\d/.test(displayContent)) ? true : false
+  if(NumIsPresent) {
   if(!dotIsPresent){
     input =  dotButton.textContent
     sendToDisplay(input);
   }
   {return}
+}
 }) 
 
 clearButton.addEventListener("click", () => { 
@@ -205,7 +211,7 @@ evaluateButton.addEventListener("click", () => {
     displayContent = operate(firstNumber, operationName, secondNumber);
   //  update first number after evaluation
 
-    firstNumber = (displayContent !=="ERROR") ? displayContent : ""; 
+    firstNumber = displayContent; 
     display.textContent = displayContent;
     // set conditions after clicking "="
     //  firstNumIsPresent set to true so it is a starting point for operations
@@ -234,12 +240,19 @@ minusButton.addEventListener("click", () => {
 })
 
 backButton.addEventListener("click", () => { 
-  if(displayContent.length>1)
-  input = displayContent;
-  displayContent = "";
-  display.textContent = "";
-  sendToDisplay(input.toString().substring(0, input.length - 1))
-  {return}
+
+  if(display.textContent.length > 1 && display.textContent !=="ERROR"){
+    let saveVar = display.textContent;
+    console.log(saveVar);
+    displayContent = "";
+    display.textContent = "";
+    console.log(display.textContent);
+
+    input = saveVar.toString().substring(0, saveVar.length - 1)
+    sendToDisplay(input)
+  } else {return}
 }) 
 
-
+// correctly handle delete 
+// correctly handle overflow
+// correctrly handle operation with dot - is able to operate with clicked dot
