@@ -25,7 +25,6 @@ const operations = {
   divide: divide
 }
 
-
 const roundToMaxLength = function (num) {
   let str = num.toString();
   if (str.length <= 12) return str;
@@ -53,6 +52,7 @@ const operate = function(firstNumber, operationName, secondNumber) {
   const operation = operations[operationName];
   let result = operation(firstNumber, secondNumber);
   result = roundToMaxLength(result);
+  if (result === 'NaN') {result = "ERROR"}
   return result;
 };
 
@@ -310,6 +310,33 @@ backButton.addEventListener("click", () => {
   }
 }) 
 
+const Keys = {
+  '0': 'zero',
+  '1': 'one',
+  '2': 'two',
+  '3': 'three',
+  '4': 'four',
+  '5': 'five',
+  '6': 'six',
+  '7': 'seven',
+  '8': 'eight',
+  '9': 'nine',
+  'Backspace': 'back',
+  '-': 'subtract',
+  '+': 'add',
+  '*': 'multiply',
+  '/': 'divide',
+  'Enter': 'evaluate',
+  '.': 'dot',
+  'Escape': 'clear',
+  'Insert': 'minus',
+  '%': 'percent'
+};
 
-
+document.addEventListener('keydown', function(event) {
+  const buttonClass = Keys[event.key];
+  if (buttonClass) {
+      document.querySelector(`.${buttonClass}`).click();
+  }
+});
 
