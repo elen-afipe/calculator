@@ -128,7 +128,6 @@ numbersButtons[numberButton].addEventListener("click", function(event) {
   if (!evaluated && (display.textContent === '0')){
     numberInput = numbersButtons[numberButton].textContent;
     displayContent = "";
-    console.log(numberInput)
     display.textContent = "";
       sendToDisplay(numberInput);
     }
@@ -169,7 +168,6 @@ numbersButtons[numberButton].addEventListener("click", function(event) {
   })
   }
 
-console.log(operationEnabled)
 const operationButtons = {
   add: addButton,
   divide: divideButton,
@@ -186,7 +184,6 @@ const operationButtons = {
       
       // update operation
       operationName =  operationButton;
-      console.log(operationName)
       // set displayContent to empty to capture second number later
       displayContent = "";
       firstNumIsRecorded = true
@@ -195,7 +192,6 @@ const operationButtons = {
         operationInput = operationButtons[operationButton].operation
         // update operation
         operationName =  operationButton;
-        console.log(operationName)
         // set displayContent to empty to capture second number later
         displayContent = "";
       }{return}
@@ -217,7 +213,6 @@ dotButton.addEventListener("click", function(){
 evaluateButton.addEventListener("click", () => { 
   secondNumber = displayContent;
   // when "=" is clicked update second number
-  console.log(`1num: ${firstNumber}, 2num: ${secondNumber},  operation: ${operationName}`)
   allVariablesGiven = (secondNumber!=='' && firstNumber!=='' && operationName !== "" && firstNumber !== 'ERROR' && secondNumber !== 'ERROR') ? true : false
   if (allVariablesGiven){
     displayContent = operate(firstNumber, operationName, secondNumber);
@@ -253,10 +248,8 @@ percentButton.addEventListener("click", () => {
 })
 
 minusButton.addEventListener("click", () => {
-  console.log(`displayContent ${displayContent}`);
   if(displayContent !== "NaN" && displayContent !== "ERROR" && displayContent !== ""){
     if (displayContent.toString().length <12) {
-      console.log(`if ${displayContent.toString().length}`);
   input =  displayContent;
   displayContent = "";
   display.textContent = "";
@@ -264,11 +257,9 @@ minusButton.addEventListener("click", () => {
   sendToDisplay(numberWithMinus);
     }
     else if (displayContent.toString().length = 12) {
-      console.log(`else if ${displayContent.toString().length}`);
       input = displayContent;
       displayContent = "";
       display.textContent = "";
-      console.log(input);
       let numberWithMinus = 0 -(input.substring(0, (input.length - 1)));
       sendToDisplay(numberWithMinus);
     }
@@ -285,14 +276,11 @@ clearButton.addEventListener("click", () => {
 
 backButton.addEventListener("click", () => { 
   if(display.textContent.length > 1 && display.textContent !=="ERROR" && display.textContent !=="NaN" && display.textContent !==""){
-    console.log(display.textContent.length)
     let saveVar = display.textContent;
-    console.log(saveVar);
     displayContent = "";
     display.textContent = "";
     input = saveVar.toString().substring(0, saveVar.length - 1)
     sendToDisplay(input)
-    console.log(display.textContent);
   } else if(display.textContent.length = 1 && display.textContent !=="ERROR" && display.textContent !=="NaN" && display.textContent !==""){
     displayContent = "";
     display.textContent = "";
