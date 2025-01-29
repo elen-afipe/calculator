@@ -25,25 +25,37 @@ const operations = {
   divide: divide
 }
 
-const operate = function(firstNumber, operationName, secondNumber) {
-    firstNumber = Number(firstNumber);
-    secondNumber = Number(secondNumber);
-    const operation = operations[operationName];
-    result = operation(firstNumber, secondNumber);
-    if(result.toString().length >= 12) {
-      const [intPart, fracPart] = result.toString().split('.');
-      if (intPart.length >= 12) {
-        return result.toPrecision(7);
-      } else {
-        const n = 12 - intPart.length; 
-        const factor = Math.pow(10, n)
-        console.log(Math.round(result * factor) / factor)
-        return Math.round(result * factor) / factor;
-      }
-    } else { 
-      return(result)
-    }
+
+const roundToMaxLength = function (num) {
+  let str = num.toString();
+  if (str.length <= 12) return str;
+
+  let expStr = num.toExponential();
+  if (expStr.length <= 12) return expStr;
+
+  let [mantissa, exponent] = expStr.split("e");
+  let exponentSignLength = exponent.includes("-") ? 2 : 1; // e+12 (1) or e-12 (2)
+  let availableMantissaLength = 12 - exponent.length - 2 - exponentSignLength; // account for "e" and sign
+
+  let roundedMantissa = Number(mantissa).toFixed(Math.max(0, availableMantissaLength));
+  let roundedExp = roundedMantissa + "e" + exponent;
+
+  return roundedExp.length <= 12 ? roundedExp : num.toExponential(1);
 };
+
+
+
+
+const operate = function(firstNumber, operationName, secondNumber) {
+  firstNumber = Number(firstNumber);
+  secondNumber = Number(secondNumber);
+  
+  const operation = operations[operationName];
+  let result = operation(firstNumber, secondNumber);
+  result = roundToMaxLength(result);
+  return result;
+};
+
 
 const display = document.querySelector(".display")
 const clearButton = document.querySelector(".clear") 
@@ -106,45 +118,51 @@ const sendToDisplay = function (input) {
   if((string.length<13)){
     displayContent = displayContent + input;
     display.textContent = displayContent;
-  }{
-    return
   }
-  
 }
 
 // send numbers to display when according buttons are clicked
 for (let numberButton in numbersButtons) {
 numbersButtons[numberButton].addEventListener("click", function(event) {
-  if (!evaluated && (display.textContent === '0' || displayContent === 'ERROR')){
+  // prevent input like 01
+  if (!evaluated && (display.textContent === '0')){
     numberInput = numbersButtons[numberButton].textContent;
     displayContent = "";
     console.log(numberInput)
     display.textContent = "";
       sendToDisplay(numberInput);
     }
-   else if(!firstNumIsPresent){
+    // initial state after page is loaded
+   else if(!evaluated && !firstNumIsPresent){
   numberInput = numbersButtons[numberButton].textContent
   sendToDisplay(numberInput);
   operationEnabled = true;
-    } 
+    }    
     else {
         if (evaluated) {
-          if (display.textContent === '0' || displayContent === 'ERROR'){
+          if (displayContent === '0'){
             numberInput = numbersButtons[numberButton].textContent
             displayContent = "";
             display.textContent = "";
               sendToDisplay(numberInput);
             }
-            else{
-    displayContent = "";
-    display.textContent = "";
-    numberInput = numbersButtons[numberButton].textContent
-    sendToDisplay(numberInput);
-    // set firstNumIsPresent to false to let user continue typing it.
-    firstNumIsPresent = false;
-    // set evaluated to false to return to this part after evaluation
-    evaluated = false;
+            else if(displayContent === 'ERROR'){
+              numberInput = numbersButtons[numberButton].textContent
+              displayContent = "";
+            display.textContent = "";
+              sendToDisplay(numberInput);
+              operationEnabled = true;
+                } 
+           else{
+              displayContent = "";
+              display.textContent = "";
+              numberInput = numbersButtons[numberButton].textContent
+              sendToDisplay(numberInput);
+              // set firstNumIsPresent to false to let user continue typing it.
+              firstNumIsPresent = false;
+              // set evaluated to false to return to this part after evaluation
             }
+            evaluated = false;
       } 
     {return}
     }
@@ -196,12 +214,6 @@ dotButton.addEventListener("click", function(){
 }
 }) 
 
-clearButton.addEventListener("click", () => { 
-  displayContent = "";
-  display.textContent = "";
-  firstNumIsPresent = false;
-})
-
 evaluateButton.addEventListener("click", () => { 
   secondNumber = displayContent;
   // when "=" is clicked update second number
@@ -210,17 +222,25 @@ evaluateButton.addEventListener("click", () => {
   if (allVariablesGiven){
     displayContent = operate(firstNumber, operationName, secondNumber);
   //  update first number after evaluation
-
     firstNumber = displayContent; 
     display.textContent = displayContent;
     // set conditions after clicking "="
     //  firstNumIsPresent set to true so it is a starting point for operations
-    
-    firstNumIsPresent = true;
-    firstNumIsRecorded = false;
-    evaluated = true;
-    allVariablesGiven = false;
-
+      if (displayContent === 'ERROR') {
+        firstNumIsPresent = false;
+        firstNumIsRecorded = false;
+        evaluated = true;
+        allVariablesGiven = false;
+        operationName = '';
+        operationEnabled = false;
+      } else {
+      firstNumIsPresent = true;
+      firstNumIsRecorded = false;
+      evaluated = true;
+      allVariablesGiven = false;
+      // secondNumber ='';
+      operationName = '';
+      }
   }
   {return}
 })
@@ -232,27 +252,64 @@ percentButton.addEventListener("click", () => {
   sendToDisplay(input/100);
 })
 
-minusButton.addEventListener("click", () => { 
+minusButton.addEventListener("click", () => {
+  console.log(`displayContent ${displayContent}`);
+  if(displayContent !== "NaN" && displayContent !== "ERROR" && displayContent !== ""){
+    if (displayContent.toString().length <12) {
+      console.log(`if ${displayContent.toString().length}`);
   input =  displayContent;
   displayContent = "";
   display.textContent = "";
-  sendToDisplay(Number(0 - input));
+  numberWithMinus = 0-input;
+  sendToDisplay(numberWithMinus);
+    }
+    else if (displayContent.toString().length = 12) {
+      console.log(`else if ${displayContent.toString().length}`);
+      input = displayContent;
+      displayContent = "";
+      display.textContent = "";
+      console.log(input);
+      let numberWithMinus = 0 -(input.substring(0, (input.length - 1)));
+      sendToDisplay(numberWithMinus);
+    }
+  }
+})
+
+clearButton.addEventListener("click", () => { 
+  displayContent = "";
+  display.textContent = "";
+  firstNumIsPresent = false;
+  evaluated = false;
+  operationEnabled = false;
 })
 
 backButton.addEventListener("click", () => { 
-
-  if(display.textContent.length > 1 && display.textContent !=="ERROR"){
+  if(display.textContent.length > 1 && display.textContent !=="ERROR" && display.textContent !=="NaN" && display.textContent !==""){
+    console.log(display.textContent.length)
     let saveVar = display.textContent;
     console.log(saveVar);
     displayContent = "";
     display.textContent = "";
-    console.log(display.textContent);
-
     input = saveVar.toString().substring(0, saveVar.length - 1)
     sendToDisplay(input)
-  } else {return}
+    console.log(display.textContent);
+  } else if(display.textContent.length = 1 && display.textContent !=="ERROR" && display.textContent !=="NaN" && display.textContent !==""){
+    displayContent = "";
+    display.textContent = "";
+    firstNumIsPresent = false;
+    evaluated = false;
+    firstNumIsRecorded = false;
+    operationEnabled = false;
+  } else {
+    displayContent = "";
+    display.textContent = "";
+    firstNumIsPresent = false;
+    evaluated = false;
+    firstNumIsRecorded = false;
+    operationEnabled = false;
+  }
 }) 
 
-// correctly handle delete 
-// correctly handle overflow
-// correctrly handle operation with dot - is able to operate with clicked dot
+
+
+
